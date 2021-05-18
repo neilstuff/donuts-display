@@ -1,0 +1,50 @@
+{
+  "name": "electron-donuts",
+  "version": "1.0.0",
+  "description": "Electron Donuts",
+  "main": "main.js",
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "start": "electron ."
+  },
+  "build": {
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thesourorange/electron-donuts.git"
+  },
+  "keywords": [
+    "Electron",
+    "Donut",
+    "Analysist"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "electron-disable-file-drop": "^1.0.2",
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "jquery": "^3.4.1",
+    "papaparse": "^4.6.0",
+    "w2ui": "^1.4.3"
+  },
+  "devDependencies": {
+    "electron": "^8.2.3",
+    "electron-builder": "^22.5.1"
+  },
+  "bugs": {
+    "url": "https://github.com/thesourorange/electron-donuts/issues"
+  },
+  "homepage": "https://github.com/thesourorange/electron-donuts#readme"
+}
