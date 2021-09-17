@@ -1,15 +1,5 @@
 'use strict'
 
-require('electron-disable-file-drop');
-
-const app = require('electron').remote.app;
-const session = require('electron').remote.session;
-const remote = require('electron').remote;
-const { dialog } = require('electron').remote;
-
-const $ = require('jquery');
-const Papa = require('papaparse');
-
 var splitter = undefined;
 var bigTable = undefined;
 
@@ -94,6 +84,10 @@ $.fn.IsNumeric = (obj) => {
 }
 
 $.fn.Open = () => {
+         
+    document.addEventListener('dragover', event => event.preventDefault());
+    document.addEventListener('drop', event => event.preventDefault());
+
     let fileutil = new FileUtil(document);
 
     fileutil.load((files) => {
@@ -203,30 +197,29 @@ $(document).ready(() => {
     });
 
     $("#window-minimize").on('click', async(e) => {
-        var window = remote.getCurrentWindow();
 
-        window.minimize();
+        window.api.minimize();
 
     });
 
     $("#window-maximize").on('click', async(e) => {
-        var window = remote.getCurrentWindow();
+        var isMaximized = window.api.isMaximized();
 
-        if (!window.isMaximized()) {
+        if (!isMaximized) {
             $("#window-maximize").addClass("fa-window-restore");
             $("#window-maximize").removeClass("fa-square");
-            window.maximize();
+            window.api.maximize();
         } else {
             $("#window-maximize").removeClass("fa-window-restore");
             $("#window-maximize").addClass("fa-square");
-            window.unmaximize();
+            window.api.unmaximize();
         }
 
     });
 
     $("#quit").on('click', async(e) => {
 
-        app.quit();
+        window.api.quit();
 
     });
 
