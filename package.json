@@ -36,12 +36,12 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "jquery": "^3.4.1",
     "papaparse": "^4.6.0",
-    "w2ui": "^1.4.3",
-    "node": "^16.9.1"
+    "w2ui": "^1.4.3"
   },
   "devDependencies": {
     "electron": "^14.0.1",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "node": "^16.9.1"
   },
   "bugs": {
     "url": "https://github.com/thesourorange/electron-donuts/issues"
