@@ -1059,9 +1059,16 @@ class TableView {
 
         }
 
+        var extendable = false; 
         for (iColumn = p = ref4 = this.nbColsVisible, ref5 = this.nbColsVisible * 2; p < ref5; iColumn = p += 1) {
             var element = document.createElement("div");
             var span = document.createElement("span");
+
+            if (extendable) {
+                element.style.borderLeft = "1px solid rgb(0,0,0,0.3)";
+            }
+
+            extendable = true;
 
             element.style.height = this.headerHeight + "px";
             element.pending = false;
@@ -1082,12 +1089,12 @@ class TableView {
 
             var divider = document.createElement("div");
 
-            divider.style.width = "3px";
+            divider.style.width = "1px";
             divider.style.height = this.headerHeight + "px";
             divider.style.position = "absolute";
-            divider.style.right = "2px";
-            divider.style.borderRight = "1px solid rgba(0,0,0,0.2)";
+            divider.style.right = "1px";
             divider.style.cursor = "col-resize";
+            divider.id = `divider-${iColumn}`;
 
             var eventRegister = new EventRegister();
 
@@ -1113,6 +1120,7 @@ class TableView {
             element.appendChild(span);
 
             this.headerViewport.appendChild(element);
+
         }
 
         this.firstVisibleRow = this.nbRowsVisible;
@@ -1169,14 +1177,14 @@ class TableView {
 
                 if (__this.currentColumn != null) {
                     var rect = __this.currentColumn.getBoundingClientRect();
-                    var width = evt.pageX - rect.left;
-                    console.log(width);
+                    var width = evt.pageX - Math.round(rect.left);
+                    var styleWidth = parseInt(__this.currentColumn.style.width.replace('px', ''));
 
                     if (width < 10) {
                         return;
                     }
 
-                    var diff = width - parseInt(__this.currentColumn.style.width.replace('px', ''));
+                    var diff = width - styleWidth;
 
                     var nextColumn = false;
                     var left = __this.columns[__this.firstVisibleColumn].left;
@@ -1205,6 +1213,7 @@ class TableView {
 
                             leftPosition = left;
                             left += columnWidth;
+
                             widths.push(columnWidth);
 
                             nextColumn = false;

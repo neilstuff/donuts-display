@@ -184,7 +184,7 @@ $.fn.Open = () => {
 /**
  * Respond to the Document 'ready' event
  */
-$(document).ready(() => {
+ $(() => {
 
     $(window).on('resize', (evt) => {});
 
