@@ -383,18 +383,12 @@ class Painter {
 
     fillHeader(headerDiv, data) {
         headerDiv.getElementsByTagName('div')[0].textContent = data;
+        headerDiv.getElementsByTagName('div')[0].parentElement.parentElement.style.borderLeft = "1px solid rgb(0,0,0,0.3)";
+
     }
 
     fillCell(cellDiv, data) {
         cellDiv.textContent = data;
-    }
-
-    fillHeaderPending(headerDiv) {
-        headerDiv.getElementsByTagName('div')[0].textContent = "Loading...";
-    }
-
-    fillCellPending(cellDiv) {
-        cellDiv.textContent = "Loading...";
     }
 
 }
@@ -1059,16 +1053,11 @@ class TableView {
 
         }
 
-        var extendable = false; 
         for (iColumn = p = ref4 = this.nbColsVisible, ref5 = this.nbColsVisible * 2; p < ref5; iColumn = p += 1) {
             var element = document.createElement("div");
             var span = document.createElement("span");
 
-            if (extendable) {
-                element.style.borderLeft = "1px solid rgb(0,0,0,0.3)";
-            }
-
-            extendable = true;
+            element.style.borderLeft = "1px solid rgb(0,0,0,0.0)";
 
             element.style.height = this.headerHeight + "px";
             element.pending = false;
