@@ -382,6 +382,7 @@ class Painter {
     }
 
     fillHeader(headerDiv, data) {
+
         headerDiv.getElementsByTagName('div')[0].textContent = data;
         headerDiv.getElementsByTagName('div')[0].parentElement.parentElement.style.borderLeft = "1px solid rgb(0,0,0,0.3)";
 
@@ -401,19 +402,19 @@ class EventRegister {
 
     }
 
-    bind(target, evt, cb) {
-        this.boundEvents.push([target, evt, cb]);
-        return target.addEventListener(evt, cb);
+    bind(target, event, cb) {
+        this.boundEvents.push([target, event, cb]);
+        return target.addEventListener(event, cb);
     }
 
     unbindAll() {
-        let cb, evt, len, n, ref1, target;
+        let cb, event, len, n, ref1, target;
 
         let ref = this.boundEvents;
 
         for (n = 0, len = ref.length; n < len; n++) {
-            ref1 = ref[n], target = ref1[0], evt = ref1[1], cb = ref1[2];
-            target.removeEventListener(evt, cb);
+            ref1 = ref[n], target = ref1[0], event = ref1[1], cb = ref1[2];
+            target.removeEventListener(event, cb);
         }
 
         return this.boundEvents = [];
@@ -502,14 +503,14 @@ class ScrollBarProxy {
         if (this.enableDragMove) {
             eventRegister.bind(this.container, 'mousedown', (function(__this) {
 
-                return function(evt) {
-                    if (evt.button === 1) {
+                return function(event) {
+                    if (event.button === 1) {
                         __this.dragging = true;
                         __this.container.className = "fattable-body-container fattable-moving";
 
-                        __this.dragging_dX = __this.scrollLeft + evt.clientX;
+                        __this.dragging_dX = __this.scrollLeft + event.clientX;
 
-                        return __this.dragging_dY = __this.scrollTop + evt.clientY;
+                        return __this.dragging_dY = __this.scrollTop + event.clientY;
 
                     }
 
@@ -519,7 +520,7 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.container, 'mouseup', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
                     __this.dragging = false;
                     return __this.container.className = "fattable-body-container";
                 };
@@ -527,15 +528,15 @@ class ScrollBarProxy {
             })(this));
 
             eventRegister.bind(this.container, 'mousemove', (function(_this) {
-                return function(evt) {
+                return function(event) {
                     let deferred = function() {
 
                         let newX, newY;
 
                         if (_this.dragging) {
 
-                            newX = -evt.clientX + _this.dragging_dX;
-                            newY = -evt.clientY + _this.dragging_dY;
+                            newX = -event.clientX + _this.dragging_dX;
+                            newY = -event.clientY + _this.dragging_dY;
 
                             return _this.setScrollXY(newX, newY);
 
@@ -551,10 +552,10 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.container, 'mouseout', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
 
                     if (__this.dragging) {
-                        if ((evt.toElement == null) || (evt.toElement.parentElement.parentElement !== __this.container)) {
+                        if ((event.toElement == null) || (event.toElement.parentElement.parentElement !== __this.container)) {
                             __this.container.className = "fattable-body-container";
                             return __this.dragging = false;
                         }
@@ -566,13 +567,13 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.headerContainer, 'mousedown', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
 
-                    if (evt.button === 1) {
+                    if (event.button === 1) {
                         __this.headerDragging = true;
                         __this.headerContainer.className = "fattable-header-container fattable-moving";
 
-                        return __this.dragging_dX = __this.scrollLeft + evt.clientX;
+                        return __this.dragging_dX = __this.scrollLeft + event.clientX;
 
                     }
 
@@ -582,13 +583,13 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.container, 'mouseup', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
                     let captureClick;
 
-                    if (evt.button === 1) {
+                    if (event.button === 1) {
                         __this.headerDragging = false;
                         __this.headerContainer.className = "fattable-header-container";
-                        evt.stopPropagation();
+                        event.stopPropagation();
 
                         captureClick = function(e) {
                             e.stopPropagation();
@@ -607,12 +608,12 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.headerContainer, 'mousemove', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
                     let deferred = function() {
                         var newX;
 
                         if (__this.headerDragging) {
-                            newX = -evt.clientX + __this.dragging_dX;
+                            newX = -event.clientX + __this.dragging_dX;
 
                             return __this.setScrollXY(newX);
 
@@ -628,11 +629,11 @@ class ScrollBarProxy {
 
             eventRegister.bind(this.headerContainer, 'mouseout', (function(__this) {
 
-                return function(evt) {
+                return function(event) {
 
                     if (__this.headerDragging) {
 
-                        if ((evt.toElement == null) || (evt.toElement.parentElement.parentElement !== __this.headerContainer)) {
+                        if ((event.toElement == null) || (event.toElement.parentElement.parentElement !== __this.headerContainer)) {
                             __this.headerContainer.className = "fattable-header-container";
                         }
 
@@ -673,20 +674,20 @@ class ScrollBarProxy {
 
                 case "wheel":
 
-                    return function(evt) {
+                    return function(event) {
                         let deltaX, deltaY, ref, ref1, ref2, ref3;
 
-                        switch (evt.deltaMode) {
+                        switch (event.deltaMode) {
 
-                            case evt.DOM_DELTA_LINE:
-                                deltaX = (ref = -50 * evt.deltaX) != null ? ref : 0;
-                                deltaY = (ref1 = -50 * evt.deltaY) != null ? ref1 : 0;
+                            case event.DOM_DELTA_LINE:
+                                deltaX = (ref = -50 * event.deltaX) != null ? ref : 0;
+                                deltaY = (ref1 = -50 * event.deltaY) != null ? ref1 : 0;
 
                                 break;
 
-                            case evt.DOM_DELTA_PIXEL:
-                                deltaX = (ref2 = -1 * evt.deltaX) != null ? ref2 : 0;
-                                deltaY = (ref3 = -1 * evt.deltaY) != null ? ref3 : 0;
+                            case event.DOM_DELTA_PIXEL:
+                                deltaX = (ref2 = -1 * event.deltaX) != null ? ref2 : 0;
+                                deltaY = (ref3 = -1 * event.deltaY) != null ? ref3 : 0;
 
                         }
 
@@ -696,13 +697,13 @@ class ScrollBarProxy {
 
                 case "mousewheel":
 
-                    return function(evt) {
+                    return function(event) {
                         let ref, ref1;
                         let deltaX = 0;
                         let deltaY = 0;
 
-                        deltaX = (ref = evt.wheelDeltaX) != null ? ref : 0;
-                        deltaY = (ref1 = evt.wheelDeltaY) != null ? ref1 : evt.wheelDelta;
+                        deltaX = (ref = event.wheelDeltaX) != null ? ref : 0;
+                        deltaY = (ref1 = event.wheelDeltaY) != null ? ref1 : event.wheelDelta;
 
                         return [deltaX, deltaY];
 
@@ -710,14 +711,14 @@ class ScrollBarProxy {
 
                 case "DOMMouseScroll":
 
-                    return function(evt) {
+                    return function(event) {
                         let deltaX = 0;
                         let deltaY = 0;
 
-                        if (evt.axis === evt.HORIZONTAL_AXI) {
-                            deltaX = -50.0 * evt.detail;
+                        if (event.axis === event.HORIZONTAL_AXI) {
+                            deltaX = -50.0 * event.detail;
                         } else {
-                            deltaY = -50.0 * evt.detail;
+                            deltaY = -50.0 * event.detail;
                         }
 
                         return [deltaX, deltaY];
@@ -730,17 +731,17 @@ class ScrollBarProxy {
 
         onMouseWheel = (function(__this) {
 
-            return function(evt) {
+            return function(event) {
 
                 var deltaX, deltaY, has_scrolled, ref;
 
-                ref = getDelta(evt), deltaX = ref[0], deltaY = ref[1];
+                ref = getDelta(event), deltaX = ref[0], deltaY = ref[1];
 
                 has_scrolled = __this.setScrollXY(__this.scrollLeft - deltaX, __this.scrollTop - deltaY);
 
                 if (has_scrolled) {
 
-                    return evt.preventDefault();
+                    return event.preventDefault();
 
                 }
 
@@ -750,16 +751,16 @@ class ScrollBarProxy {
 
         onMouseWheelHeader = (function(__this) {
 
-            return function(evt) {
+            return function(event) {
 
                 var _, deltaX, has_scrolled, ref;
 
-                ref = getDelta(evt), deltaX = ref[0], _ = ref[1];
+                ref = getDelta(event), deltaX = ref[0], _ = ref[1];
                 has_scrolled = __this.setScrollXY(__this.scrollLeft - deltaX, __this.scrollTop);
 
                 if (has_scrolled) {
 
-                    return evt.preventDefault();
+                    return event.preventDefault();
 
                 }
 
@@ -898,7 +899,7 @@ class TableView {
 
         this.eventRegister.bind(document, 'mouseup', (function(__this) {
 
-            return function(evt) {
+            return function(event) {
 
                 __this.currentColumn = null;
 
@@ -1078,7 +1079,7 @@ class TableView {
 
             var divider = document.createElement("div");
 
-            divider.style.width = "1px";
+            divider.style.width = "2px";
             divider.style.height = this.headerHeight + "px";
             divider.style.position = "absolute";
             divider.style.right = "1px";
@@ -1089,7 +1090,7 @@ class TableView {
 
             eventRegister.bind(divider, 'mousedown', (function(params) {
 
-                return function(evt) {
+                return function(event) {
                     params.owner.currentColumn = params.element;
                 };
 
@@ -1162,11 +1163,11 @@ class TableView {
 
         this.eventRegister.bind(document, 'mousemove', (function(__this) {
 
-            return function(evt) {
+            return function(event) {
 
                 if (__this.currentColumn != null) {
                     var rect = __this.currentColumn.getBoundingClientRect();
-                    var width = evt.pageX - Math.round(rect.left);
+                    var width = event.pageX - Math.round(rect.left);
                     var styleWidth = parseInt(__this.currentColumn.style.width.replace('px', ''));
 
                     if (width < 10) {
@@ -1427,12 +1428,6 @@ class TableView {
 
                 })(this));
 
-            } else if (!header.pending) {
-
-                header.pending = true;
-
-                this.painter.fillHeaderPending(header);
-
             }
 
             header.left = col_x;
@@ -1454,12 +1449,6 @@ class TableView {
                             return __this.painter.fillCell(cell, data);
 
                         });
-
-                    } else if (!cell.pending) {
-
-                        cell.pending = true;
-
-                        return __this.painter.fillCellPending(cell);
 
                     }
 
@@ -1531,12 +1520,6 @@ class TableView {
                             return __this.painter.fillCell(cell, data);
 
                         });
-
-                    } else if (!cell.pending) {
-
-                        cell.pending = true;
-
-                        return __this.painter.fillCellPending(cell);
 
                     }
 
