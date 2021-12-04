@@ -258,22 +258,20 @@ class PagedAsyncTableModel extends TableModel {
         return "";
     }
 
-
-
     headerPageName(j) {
         return "";
     }
 
-    getHeader(j, cb) {
-        var pageName = this.headerPageName(j);
+    getHeader(column, callback) {
+        var pageName = this.headerPageName(column);
 
         if (this.__headerPageCache.has(pageName)) {
-            return cb(this.__headerPageCache.get(pageName)(j));
+            return callback(this.__headerPageCache.get(pageName)(column));
         } else if (this.__headerFetchCallbacks[pageName] != null) {
-            return this.__headerFetchCallbacks[pageName].push([j, cb]);
+            return this.__headerFetchCallbacks[pageName].push([column, callback]);
         } else {
             this.__headerFetchCallbacks[pageName] = [
-                [j, cb]
+                [column, callback]
             ];
 
             return this.fetchHeaderPage(pageName, (function(__this) {
@@ -288,9 +286,9 @@ class PagedAsyncTableModel extends TableModel {
 
                     for (n = 0, len = ref.length; n < len; n++) {
 
-                        ref1 = ref[n], j = ref1[0], cb = ref1[1];
+                        ref1 = ref[n], column = ref1[0], cb = ref1[1];
 
-                        cb(page(j));
+                        cb(page(column));
 
                     }
 
@@ -304,8 +302,8 @@ class PagedAsyncTableModel extends TableModel {
 
     }
 
-    hasCell(i, j) {
-        var pageName = this.cellPageName(i, j);
+    hasCell(column, row) {
+        var pageName = this.cellPageName(column, row);
 
         return this.__pageCache.has(pageName);
 
@@ -381,10 +379,11 @@ class Painter {
 
     }
 
-    fillHeader(headerDiv, data) {
+    fillHeader(headerDiv, data, column) {
 
         headerDiv.getElementsByTagName('div')[0].textContent = data;
-        headerDiv.getElementsByTagName('div')[0].parentElement.parentElement.style.borderLeft = "1px solid rgb(0,0,0,0.3)";
+        headerDiv.getElementsByTagName('div')[0].parentElement.parentElement.style.borderLeft =
+            column == 0 ? "1px solid rgb(0,0,0,0.0)" : "1px solid rgb(0,0,0,0.3)";
 
     }
 
@@ -975,7 +974,7 @@ class TableView {
     };
 
     setup() {
-        var iColumn, i, j, n, o, onScroll, p, ref, ref1, ref2, ref3, ref4, ref5;
+        var iColumn, row, column, n, o, onScroll, p, ref, ref1, ref2, ref3, ref4, ref5;
 
         this.cleanUp();
         this.getContainerDimension();
@@ -1005,9 +1004,9 @@ class TableView {
         this.bodyViewport.style.height = this.height + "px";
         let __self = this;
 
-        for (j = n = ref = this.nbColsVisible, ref1 = this.nbColsVisible * 2; n < ref1; j = n += 1) {
+        for (column = n = ref = this.nbColsVisible, ref1 = this.nbColsVisible * 2; n < ref1; column = n += 1) {
 
-            for (i = o = ref2 = this.nbRowsVisible, ref3 = this.nbRowsVisible * 2; o < ref3; i = o += 1) {
+            for (row = o = ref2 = this.nbRowsVisible, ref3 = this.nbRowsVisible * 2; o < ref3; row = o += 1) {
                 let element = document.createElement("div");
 
                 this.painter.setupCell(element);
@@ -1019,7 +1018,7 @@ class TableView {
                 element.style.overflow = "none";
 
                 this.bodyViewport.appendChild(element);
-                this.cells[`${i},${j}`] = element;
+                this.cells[`${row},${column}`] = element;
 
                 element.onmouseover = function(e) {
                     var coordinates = /(\d*),(\d*)/.exec(element.getAttribute("id"));
@@ -1059,7 +1058,6 @@ class TableView {
             var span = document.createElement("span");
 
             element.style.borderLeft = "1px solid rgb(0,0,0,0.0)";
-
             element.style.height = this.headerHeight + "px";
             element.pending = false;
 
@@ -1131,9 +1129,9 @@ class TableView {
             return function(x, y) {
                 var _, cell, col, ref6, ref7, cellRef;
 
-                ref6 = __this.leftTopCornerFromXY(x, y), i = ref6[0], j = ref6[1];
+                ref6 = __this.leftTopCornerFromXY(x, y), row = ref6[0], column = ref6[1];
 
-                __this.display(i, j);
+                __this.display(row, column);
 
                 ref7 = __this.columns;
 
@@ -1273,7 +1271,7 @@ class TableView {
     }
 
     refreshAllContent(evenNotPending) {
-        var cell, fn, header, i, j, k, n, ref, ref1, results;
+        var cell, drawer, header, row, column, k, n, ref, ref1, results;
 
         if (evenNotPending == null) {
 
@@ -1281,17 +1279,17 @@ class TableView {
 
         }
 
-        fn = (function(__this) {
+        drawer = (function(__this) {
 
-            return function(header) {
+            return function(header, column) {
 
                 if (evenNotPending || header.pending) {
 
-                    return __this.model.getHeader(j, function(data) {
+                    return __this.model.getHeader(column, function(data) {
 
                         header.pending = false;
 
-                        return __this.painter.fillHeader(header, data);
+                        return __this.painter.fillHeader(header, data, column);
 
                     });
 
@@ -1303,30 +1301,35 @@ class TableView {
 
         results = [];
 
-        for (j = n = ref = this.firstVisibleColumn, ref1 = this.firstVisibleColumn + this.nbColsVisible; n < ref1; j = n += 1) {
+        for (column = n = ref = this.firstVisibleColumn, ref1 = this.firstVisibleColumn + this.nbColsVisible; n < ref1; column = n += 1) {
 
-            header = this.columns[j];
+            header = this.columns[column];
 
-            fn(header);
+            console.log("Column 1", column);
+
+            drawer(header, column);
 
             results.push((function() {
-                var o, ref2, ref3, results1;
+                var tracker, ref2, ref3, rows;
 
-                results1 = [];
+                rows = [];
 
-                for (i = o = ref2 = this.firstVisibleRow, ref3 = this.firstVisibleRow + this.nbRowsVisible; o < ref3; i = o += 1) {
+                for (row = tracker = ref2 = this.firstVisibleRow, ref3 = this.firstVisibleRow + this.nbRowsVisible; tracker < ref3; row = tracker += 1) {
 
-                    k = i + "," + j;
+                    k = row + "," + column;
 
                     cell = this.cells[k];
 
                     if (evenNotPending || cell.pending) {
-                        results1.push((function(__this) {
+
+                        rows.push((function(__this) {
 
                             return function(cell) {
 
-                                return __this.model.getCell(i, j, function(data) {
+                                return __this.model.getCell(row, column, function(data) {
+
                                     cell.pending = false;
+
                                     return __this.painter.fillCell(cell, data);
 
                                 });
@@ -1337,13 +1340,13 @@ class TableView {
 
                     } else {
 
-                        results1.push(void 0);
+                        rows.push(void 0);
 
                     }
 
                 }
 
-                return results1;
+                return rows;
 
             }).call(this));
 
@@ -1379,7 +1382,7 @@ class TableView {
     };
 
     moveX(j) {
-        var cell, col_width, col_x, dest_j, dj, fn, header, i, k, last_i, last_j, n, o, offset_j, orig_j, ref, ref1, ref2, shift_j;
+        var cell, col_width, col_x, column, dj, fn, header, i, k, last_i, last_j, n, o, offset_j, orig_j, ref, ref1, ref2, shift_j;
 
         last_i = this.firstVisibleRow;
         last_j = this.firstVisibleColumn;
@@ -1398,31 +1401,33 @@ class TableView {
 
             if (shift_j > 0) {
                 orig_j = this.firstVisibleColumn + offset_j;
-                dest_j = j + offset_j + this.nbColsVisible - dj;
+                column = j + offset_j + this.nbColsVisible - dj;
 
             } else {
                 orig_j = this.firstVisibleColumn + this.nbColsVisible - dj + offset_j;
-                dest_j = j + offset_j;
+                column = j + offset_j;
 
             }
 
-            col_x = this.columnOffset[dest_j];
+            col_x = this.columnOffset[column];
 
-            col_width = this.columnWidths[dest_j] + "px";
+            col_width = this.columnWidths[column] + "px";
 
             header = this.columns[orig_j];
 
             delete this.columns[orig_j];
 
-            if (this.model.hasHeader(dest_j)) {
+            if (this.model.hasHeader(column)) {
 
-                this.model.getHeader(dest_j, (function(_this) {
+                this.model.getHeader(column, (function(__this) {
 
                     return function(data) {
 
+                        console.log("dest_j", column);
+
                         header.pending = false;
 
-                        return _this.painter.fillHeader(header, data);
+                        return __this.painter.fillHeader(header, data, column);
 
                     };
 
@@ -1434,15 +1439,15 @@ class TableView {
 
             header.style.width = col_width;
 
-            this.columns[dest_j] = header;
+            this.columns[column] = header;
 
             fn = (function(__this) {
 
                 return function(cell) {
 
-                    if (__this.model.hasCell(i, dest_j)) {
+                    if (__this.model.hasCell(i, column)) {
 
-                        return __this.model.getCell(i, dest_j, function(data) {
+                        return __this.model.getCell(i, column, function(data) {
 
                             cell.pending = false;
 
@@ -1463,7 +1468,7 @@ class TableView {
                 cell = this.cells[k];
                 delete this.cells[k];
 
-                this.cells[i + "," + dest_j] = cell;
+                this.cells[i + "," + column] = cell;
                 cell.left = col_x;
                 cell.style.width = col_width;
 
