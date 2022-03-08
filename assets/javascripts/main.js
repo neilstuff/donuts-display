@@ -185,7 +185,7 @@ $.fn.Open = () => {
 /**
  * Respond to the Document 'ready' event
  */
- $(() => {
+ window.onload = function() {
 
     $(window).on('resize', (evt) => {});
 
@@ -232,4 +232,4 @@ $.fn.Open = () => {
 
     });
 
-});
+}
