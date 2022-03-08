@@ -28,13 +28,12 @@
   "keywords": [
     "Electron",
     "Donut",
-    "Analysist"
+    "Analysis"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "jquery": "^3.4.1",
     "papaparse": "^4.6.0",
     "w2ui": "^1.4.3"
   },
