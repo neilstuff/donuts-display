@@ -1305,8 +1305,6 @@ class TableView {
 
             header = this.columns[column];
 
-            console.log("Column 1", column);
-
             drawer(header, column);
 
             results.push((function() {
@@ -1422,8 +1420,6 @@ class TableView {
                 this.model.getHeader(column, (function(__this) {
 
                     return function(data) {
-
-                        console.log("dest_j", column);
 
                         header.pending = false;
 

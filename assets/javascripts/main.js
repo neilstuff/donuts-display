@@ -96,6 +96,8 @@ $.fn.Open = () => {
 
             reader.onload = (e) => {
                     $('#waitDialog').css('display', 'inline-block');
+                    $('#placeholder').css('display', 'none');
+ 
                     window.setTimeout(function() {
                         let results = Papa.parse(reader.result);
                         let lines = results.data;
@@ -128,7 +130,6 @@ $.fn.Open = () => {
 
                         }
 
-                        $('#placeholder').css('display', 'none');
                         $("#details").html("");
 
                         let widths = [];
@@ -187,6 +188,14 @@ $.fn.Open = () => {
  $(() => {
 
     $(window).on('resize', (evt) => {});
+
+    $('#upload').on('click', (e) => {
+
+        $(this).Open();
+
+        return false;
+
+    });
 
     $('#open').on('click', (e) => {
 
