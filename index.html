@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="assets/css/toolbar.css">
     <link rel="stylesheet" href='node_modules/@fortawesome/fontawesome-free/css/all.css' />
 
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/papaparse/papaparse.min.js"></script>
 
     <script src="assets/javascripts/gui/tableview.js"></script>
@@ -20,12 +21,7 @@
     <div id="waitDialog" class="modal">
         <div style="position:fixed; width:100%; height:100%;">
             <div style="position:absolute; left: 50%; top: 40%; font:12px Trebuchet MS, sans-serif;">
-                <span style="width:12px;height:12px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="width:12px; height:12px;">
-                        <path d="M0 24C0 10.75 10.75 0 24 0H360C373.3 0 384 10.75 384 24C384 37.25 373.3 48 360 48H352V66.98C352 107.3 335.1 145.1 307.5 174.5L225.9 256L307.5 337.5C335.1 366 352 404.7 352 445V464H360C373.3 464 384 474.7 384 488C384 501.3 373.3 512 360 512H24C10.75 512 0 501.3 0 488C0 474.7 10.75 464 24 464H32V445C32 404.7 48.01 366 76.52 337.5L158.1 256L76.52 174.5C48.01 145.1 32 107.3 32 66.98V48H24C10.75 48 0 37.25 0 24V24zM99.78 384H284.2C281 379.6 277.4 375.4 273.5 371.5L192 289.9L110.5 371.5C106.6 375.4 102.1 379.6 99.78 384H99.78zM284.2 128C296.1 110.4 304 89.03 304 66.98V48H80V66.98C80 89.03 87 110.4 99.78 128H284.2z"/>
-                    </svg>
-                </span>
-                <label>Loading...</label>
+                <span style='width:16px; height:16px;'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24"><path fill-rule="evenodd" d="M2.75 1a.75.75 0 000 1.5h.75v1.25a4.75 4.75 0 001.9 3.8l.333.25c.134.1.134.3 0 .4l-.333.25a4.75 4.75 0 00-1.9 3.8v1.25h-.75a.75.75 0 000 1.5h10.5a.75.75 0 000-1.5h-.75v-1.25a4.75 4.75 0 00-1.9-3.8l-.333-.25a.25.25 0 010-.4l.333-.25a4.75 4.75 0 001.9-3.8V2.5h.75a.75.75 0 000-1.5H2.75zM11 2.5H5v1.25a3.25 3.25 0 001.3 2.6l.333.25c.934.7.934 2.1 0 2.8l-.333.25a3.25 3.25 0 00-1.3 2.6v1.25h6v-1.25a3.25 3.25 0 00-1.3-2.6l-.333-.25a1.75 1.75 0 010-2.8l.333-.25a3.25 3.25 0 001.3-2.6V2.5z"></path></svg></span>
             </div>
         </div>
     </div>
@@ -42,7 +38,10 @@
                 </div>
 
                 <div style="position:absolute; top:5px; right:120px; width:35px;">
-                    <a id="open" style="position:absolute; font-size:18px; left:6px;" class="menu-item">&#8682;</a>
+                    <a id="open" style="position:absolute; font-size:18px; left:6px;" class="menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill-rule="evenodd" d="M12.53 1.22a.75.75 0 00-1.06 0L8.22 4.47a.75.75 0 001.06 1.06l1.97-1.97v10.69a.75.75 0 001.5 0V3.56l1.97 1.97a.75.75 0 101.06-1.06l-3.25-3.25zM5.5 9.75a.25.25 0 01.25-.25h2.5a.75.75 0 000-1.5h-2.5A1.75 1.75 0 004 9.75v10.5c0 .966.784 1.75 1.75 1.75h12.5A1.75 1.75 0 0020 20.25V9.75A1.75 1.75 0 0018.25 8h-2.5a.75.75 0 000 1.5h2.5a.25.25 0 01.25.25v10.5a.25.25 0 01-.25.25H5.75a.25.25 0 01-.25-.25V9.75z"></path>
+                        </svg>
+                    </a>
                 </div>    
 
                 <div style="position: absolute; top:5px; right:0px; padding-right:0px;">
@@ -55,7 +54,8 @@
             <div id="container" style="position:absolute; top:32px; left:10px; right:295px; bottom:10px; border: 1px solid rgba(0,0,0, 0.2); overflow:hidden;">
                 <div id="placeholder" style="position:absolute; display:inline-block; top:10px; left:10px; right:10px; bottom:10px">
                     <div id="upload" class="menu-item" style="color: rgba(0,0,0,0.1); margin-left:45%; margin-top:30%; font-size:64px;">
-                        &#8682;
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="128" height="128"><path fill-rule="evenodd" d="M12.53 1.22a.75.75 0 00-1.06 0L8.22 4.47a.75.75 0 001.06 1.06l1.97-1.97v10.69a.75.75 0 001.5 0V3.56l1.97 1.97a.75.75 0 101.06-1.06l-3.25-3.25zM5.5 9.75a.25.25 0 01.25-.25h2.5a.75.75 0 000-1.5h-2.5A1.75 1.75 0 004 9.75v10.5c0 .966.784 1.75 1.75 1.75h12.5A1.75 1.75 0 0020 20.25V9.75A1.75 1.75 0 0018.25 8h-2.5a.75.75 0 000 1.5h2.5a.25.25 0 01.25.25v10.5a.25.25 0 01-.25.25H5.75a.25.25 0 01-.25-.25V9.75z"></path>
+                        </svg>
                     </div>
                 </div>
                 <div id="table" style="position:absolute; display:none; left:2px; top:2px; bottom:2px; right:2px; overflow:none;">
