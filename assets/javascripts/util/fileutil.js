@@ -1,45 +1,49 @@
-function FileUtil(document) {
+class FileUtil {
 
-    this._document = document;
+    constructor(document) {
+        this._document = document;
 
-};
-
-FileUtil.prototype.saveAs = function (data, fileName) {
-    var saveLink = this._document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-    var canUseSaveLink = "download" in saveLink;
-    var getURL = function () {
-        return view.URL || view.webkitURL || view;
     }
 
-    var click = function (node) {
-        var event = new MouseEvent("click");
-        node.dispatchEvent(event);
+    saveAs(data, fileName) {
+        var saveLink = this._document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+        var canUseSaveLink = "download" in saveLink;
+        var getURL = function () {
+            return view.URL || view.webkitURL || view;
+        }
+
+        var click = function (node) {
+            var event = new MouseEvent("click");
+            node.dispatchEvent(event);
+        }
+
+        var fileURL = URL.createObjectURL(new Blob([data], { type: 'text/plain' }));
+
+        saveLink.href = fileURL;
+        saveLink.download = fileName;
+
+        click(saveLink);
+
     }
 
-    var fileURL = URL.createObjectURL(new Blob([data], { type: 'text/plain' }));
+    load(callback) {
+        var loadButton = this._document.createElementNS("http://www.w3.org/1999/xhtml", "input");
 
-    saveLink.href = fileURL;
-    saveLink.download = fileName;
+        loadButton.setAttribute("type", "file");
 
-    click(saveLink);
+        loadButton.addEventListener('change', function (e) {
+            var files = e.target.files
 
-};
+            callback(files);
 
-FileUtil.prototype.load = function (callback) {
-    var loadButton = this._document.createElementNS("http://www.w3.org/1999/xhtml", "input");
+            return false;
 
-    loadButton.setAttribute("type", "file");
+        }, false);
 
-    loadButton.addEventListener('change', function (e) {
-        var files = e.target.files
+        loadButton.click();
 
-        callback(files);
+    }
 
-        return false;
+}
 
-    }, false);
-
-    loadButton.click();
-
-};
-
+module.exports = FileUtil;

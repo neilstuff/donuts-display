@@ -1,68 +1,7 @@
-'use strict'
+var TableModel = require('./tablemodel.js');
+var TablePainter = require('./tablepainter.js');
+
 var prefixedTransformCssKey;
-
-var bound = function(x, m, M) {
-
-    if (x < m) {
-        return m;
-    } else if (x > M) {
-        return M;
-    } else {
-        return x;
-    }
-
-};
-
-var smallest_diff_subsequence = function(arr, w) {
-    let l = 1;
-
-    let start = 0;
-
-    while (start + l < arr.length) {
-        if (arr[start + l] - arr[start] > w) {
-            start += 1;
-
-        } else {
-            l += 1;
-        }
-
-    }
-
-    return l;
-
-};
-
-var binary_search = function(arr, x) {
-    var a, b, m, v;
-
-    if (arr[0] > x) {
-        return 0;
-    } else {
-        a = 0;
-        b = arr.length;
-
-        while (a + 2 < b) {
-            m = (a + b) / 2 | 0;
-            v = arr[m];
-
-            if (v < x) {
-                a = m;
-            } else if (v > x) {
-                b = m;
-            } else {
-                return m;
-            }
-        }
-        return a;
-    }
-
-};
-
-var distance = function(a1, a2) {
-
-    return Math.abs(a2 - a1);
-
-};
 
 class Condition {
     constructor() {
@@ -106,7 +45,7 @@ class Condition {
 
 var domReadyPromise = new Condition();
 
-var getTranformPrefix = function() {
+var getTranformPrefix = function () {
     var el, len, n, ref, testKey;
 
     el = document.createElement("div");
@@ -125,68 +64,6 @@ var getTranformPrefix = function() {
 }
 
 prefixedTransformCssKey = getTranformPrefix();
-
-class TableModel {
-
-    hasCell(i, j) {
-
-        return false;
-
-    }
-
-    getCell(i, j, callback) {
-
-        callback("getCell not implemented");
-
-    }
-
-    getHeader(j, callback) {
-
-        callback("getHeader not implemented");
-
-    }
-
-}
-
-class SyncTableModel extends TableModel {
-
-    getCellSync(i, j) {
-
-        return `[${i}],[${j}]`;
-
-    }
-
-    getHeaderSync(j) {
-
-        return `col [${j}]`;
-
-    }
-
-    hasCell(i, j) {
-
-        return true;
-
-    }
-
-    hasHeader(j) {
-
-        return true;
-
-    }
-
-    getCell(i, j, callback) {
-
-        callback(this.getCellSync(i, j));
-
-    }
-
-    getHeader(j, callback) {
-
-        callback(this.getHeaderSync(j));
-
-    }
-
-}
 
 class LRUCache {
 
@@ -274,9 +151,9 @@ class PagedAsyncTableModel extends TableModel {
                 [column, callback]
             ];
 
-            return this.fetchHeaderPage(pageName, (function(__this) {
+            return this.fetchHeaderPage(pageName, (function (__this) {
 
-                return function(page) {
+                return function (page) {
 
                     var cb, len, n, ref, ref1;
 
@@ -326,9 +203,9 @@ class PagedAsyncTableModel extends TableModel {
                 [i, j, cb]
             ];
 
-            return this.__fetchCellPage(pageName, (function(__this) {
+            return this.__fetchCellPage(pageName, (function (__this) {
 
-                return function(page) {
+                return function (page) {
 
                     let len, n, ref, ref1;
 
@@ -353,43 +230,7 @@ class PagedAsyncTableModel extends TableModel {
 
     }
 
-    fetchCellPage(pageName, cb) {}
-
-}
-
-class Painter {
-
-    setupCell(cellDiv) {}
-
-    setupHeader(headerDiv) {}
-
-    cleanUpCell(cellDiv) {}
-
-    cleanUpHeader(headerDiv) {}
-
-    cleanUp(table) {
-
-        for (let cell in table.cells) {
-            this.cleanUpCell(cell)
-        }
-
-        for (let header in table.columns) {
-            this.cleanUpHeader(header);
-        }
-
-    }
-
-    fillHeader(headerDiv, data, column) {
-
-        headerDiv.getElementsByTagName('div')[0].textContent = data;
-        headerDiv.getElementsByTagName('div')[0].parentElement.parentElement.style.borderLeft =
-            column == 0 ? "1px solid rgb(0,0,0,0.0)" : "1px solid rgb(0,0,0,0.3)";
-
-    }
-
-    fillCell(cellDiv, data) {
-        cellDiv.textContent = data;
-    }
+    fetchCellPage(pageName, cb) { }
 
 }
 
@@ -461,9 +302,9 @@ class ScrollBarProxy {
         this.scrollLeft = 0;
         this.scrollTop = 0;
 
-        this.horizontalScrollbar.onscroll = (function(__this) {
+        this.horizontalScrollbar.onscroll = (function (__this) {
 
-            return function() {
+            return function () {
 
                 if (!__this.dragging) {
                     if (__this.scrollLeft !== __this.horizontalScrollbar.scrollLeft) {
@@ -482,8 +323,8 @@ class ScrollBarProxy {
 
         })(this);
 
-        this.verticalScrollbar.onscroll = (function(__this) {
-            return function() {
+        this.verticalScrollbar.onscroll = (function (__this) {
+            return function () {
 
                 if (!__this.dragging) {
                     if (__this.scrollTop !== __this.verticalScrollbar.scrollTop) {
@@ -500,9 +341,9 @@ class ScrollBarProxy {
         })(this);
 
         if (this.enableDragMove) {
-            eventRegister.bind(this.container, 'mousedown', (function(__this) {
+            eventRegister.bind(this.container, 'mousedown', (function (__this) {
 
-                return function(event) {
+                return function (event) {
                     if (event.button === 1) {
                         __this.dragging = true;
                         __this.container.className = "fattable-body-container fattable-moving";
@@ -517,18 +358,18 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.container, 'mouseup', (function(__this) {
+            eventRegister.bind(this.container, 'mouseup', (function (__this) {
 
-                return function(event) {
+                return function (event) {
                     __this.dragging = false;
                     return __this.container.className = "fattable-body-container";
                 };
 
             })(this));
 
-            eventRegister.bind(this.container, 'mousemove', (function(_this) {
-                return function(event) {
-                    let deferred = function() {
+            eventRegister.bind(this.container, 'mousemove', (function (_this) {
+                return function (event) {
+                    let deferred = function () {
 
                         let newX, newY;
 
@@ -549,9 +390,9 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.container, 'mouseout', (function(__this) {
+            eventRegister.bind(this.container, 'mouseout', (function (__this) {
 
-                return function(event) {
+                return function (event) {
 
                     if (__this.dragging) {
                         if ((event.toElement == null) || (event.toElement.parentElement.parentElement !== __this.container)) {
@@ -564,9 +405,9 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.headerContainer, 'mousedown', (function(__this) {
+            eventRegister.bind(this.headerContainer, 'mousedown', (function (__this) {
 
-                return function(event) {
+                return function (event) {
 
                     if (event.button === 1) {
                         __this.headerDragging = true;
@@ -580,9 +421,9 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.container, 'mouseup', (function(__this) {
+            eventRegister.bind(this.container, 'mouseup', (function (__this) {
 
-                return function(event) {
+                return function (event) {
                     let captureClick;
 
                     if (event.button === 1) {
@@ -590,7 +431,7 @@ class ScrollBarProxy {
                         __this.headerContainer.className = "fattable-header-container";
                         event.stopPropagation();
 
-                        captureClick = function(e) {
+                        captureClick = function (e) {
                             e.stopPropagation();
 
                             return __this.removeEventListener('click', captureClick, true);
@@ -605,10 +446,10 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.headerContainer, 'mousemove', (function(__this) {
+            eventRegister.bind(this.headerContainer, 'mousemove', (function (__this) {
 
-                return function(event) {
-                    let deferred = function() {
+                return function (event) {
+                    let deferred = function () {
                         var newX;
 
                         if (__this.headerDragging) {
@@ -626,9 +467,9 @@ class ScrollBarProxy {
 
             })(this));
 
-            eventRegister.bind(this.headerContainer, 'mouseout', (function(__this) {
+            eventRegister.bind(this.headerContainer, 'mouseout', (function (__this) {
 
-                return function(event) {
+                return function (event) {
 
                     if (__this.headerDragging) {
 
@@ -667,13 +508,13 @@ class ScrollBarProxy {
             supportedEvent = "mousewheel";
         }
 
-        getDelta = (function() {
+        getDelta = (function () {
 
             switch (supportedEvent) {
 
                 case "wheel":
 
-                    return function(event) {
+                    return function (event) {
                         let deltaX, deltaY, ref, ref1, ref2, ref3;
 
                         switch (event.deltaMode) {
@@ -696,7 +537,7 @@ class ScrollBarProxy {
 
                 case "mousewheel":
 
-                    return function(event) {
+                    return function (event) {
                         let ref, ref1;
                         let deltaX = 0;
                         let deltaY = 0;
@@ -710,7 +551,7 @@ class ScrollBarProxy {
 
                 case "DOMMouseScroll":
 
-                    return function(event) {
+                    return function (event) {
                         let deltaX = 0;
                         let deltaY = 0;
 
@@ -728,9 +569,9 @@ class ScrollBarProxy {
 
         })();
 
-        onMouseWheel = (function(__this) {
+        onMouseWheel = (function (__this) {
 
-            return function(event) {
+            return function (event) {
 
                 var deltaX, deltaY, has_scrolled, ref;
 
@@ -748,9 +589,9 @@ class ScrollBarProxy {
 
         })(this);
 
-        onMouseWheelHeader = (function(__this) {
+        onMouseWheelHeader = (function (__this) {
 
-            return function(event) {
+            return function (event) {
 
                 var _, deltaX, has_scrolled, ref;
 
@@ -777,16 +618,16 @@ class ScrollBarProxy {
     };
 
     setScrollXY(x, y) {
-        let has_scrolled;
+        let hasScrolled;
 
-        has_scrolled = false;
+        hasScrolled = false;
 
         if (x != null) {
 
-            x = bound(x, 0, this.maxScrollHorizontal);
+            x = TableView.bound(x, 0, this.maxScrollHorizontal);
 
             if (this.scrollLeft !== x) {
-                has_scrolled = true;
+                hasScrolled = true;
                 this.scrollLeft = x;
             }
 
@@ -795,11 +636,11 @@ class ScrollBarProxy {
         }
 
         if (y != null) {
-            y = bound(y, 0, this.maxScrollVertical);
+            y = TableView.bound(y, 0, this.maxScrollVertical);
 
             if (this.scrollTop !== y) {
 
-                has_scrolled = true;
+                hasScrolled = true;
                 this.scrollTop = y;
 
             }
@@ -814,7 +655,7 @@ class ScrollBarProxy {
         this.verticalScrollbar.scrollTop = y;
         this.onScroll(x, y);
 
-        return has_scrolled;
+        return hasScrolled;
 
     }
 
@@ -822,7 +663,64 @@ class ScrollBarProxy {
 
 class TableView {
 
-    cumsum(arr) {
+    static bound(x, m, M) {
+
+        if (x < m) {
+            return m;
+        } else if (x > M) {
+            return M;
+        } else {
+            return x;
+        }
+
+    }
+
+    static smallestDiffSubsequence(arr, w) {
+        let l = 1;
+
+        let start = 0;
+
+        while (start + l < arr.length) {
+            if (arr[start + l] - arr[start] > w) {
+                start += 1;
+
+            } else {
+                l += 1;
+            }
+
+        }
+
+        return l;
+
+    }
+
+    static binarySearch(arr, x) {
+        var a, b, m, v;
+
+        if (arr[0] > x) {
+            return 0;
+        } else {
+            a = 0;
+            b = arr.length;
+
+            while (a + 2 < b) {
+                m = (a + b) / 2 | 0;
+                v = arr[m];
+
+                if (v < x) {
+                    a = m;
+                } else if (v > x) {
+                    b = m;
+                } else {
+                    return m;
+                }
+            }
+            return a;
+        }
+
+    }
+
+    static cumsum(arr) {
         var cs, len, n, s, x;
 
         cs = [0.0];
@@ -858,7 +756,7 @@ class TableView {
         this.__processors = [];
         this.current_column = -1;
 
-        this.readRequiredParameter(parameters, "painter", new Painter());
+        this.readRequiredParameter(parameters, "painter", new TablePainter());
         this.readRequiredParameter(parameters, "autoSetup", true);
         this.readRequiredParameter(parameters, "model");
         this.readRequiredParameter(parameters, "nbRows");
@@ -875,7 +773,7 @@ class TableView {
         }
 
         this.height = this.rowHeight * this.nbRows;
-        this.columnOffset = this.cumsum(this.columnWidths);
+        this.columnOffset = TableView.cumsum(this.columnWidths);
         this.width = this.columnOffset[this.columnOffset.length - 1];
 
         this.columns = {};
@@ -886,9 +784,9 @@ class TableView {
 
         this.eventRegister = new EventRegister();
 
-        this.eventRegister.bind(window, 'resize', (function(__this) {
+        this.eventRegister.bind(window, 'resize', (function (__this) {
 
-            return function(event) {
+            return function (event) {
 
                 __this.resize();
 
@@ -896,9 +794,9 @@ class TableView {
 
         })(this));
 
-        this.eventRegister.bind(document, 'mouseup', (function(__this) {
+        this.eventRegister.bind(document, 'mouseup', (function (__this) {
 
-            return function(event) {
+            return function (event) {
 
                 __this.currentColumn = null;
 
@@ -908,9 +806,9 @@ class TableView {
 
         if (this.autoSetup) {
 
-            domReadyPromise.then((function(__this) {
+            domReadyPromise.then((function (__this) {
 
-                return function() {
+                return function () {
 
                     return __this.setup();
 
@@ -941,15 +839,15 @@ class TableView {
     getContainerDimension() {
         this.w = this.container.offsetWidth;
         this.h = this.container.offsetHeight - this.headerHeight;
-        this.nbColsVisible = Math.min(smallest_diff_subsequence(this.columnOffset, this.w) + 2, this.columnWidths.length);
+        this.nbColsVisible = Math.min(TableView.smallestDiffSubsequence(this.columnOffset, this.w) + 2, this.columnWidths.length);
         this.nbRowsVisible = Math.min((this.h / this.rowHeight | 0) + 2, this.nbRows);
 
     };
 
     leftTopCornerFromXY(x, y) {
 
-        let i = bound(y / this.rowHeight | 0, 0, this.nbRows - this.nbRowsVisible);
-        let j = bound(binary_search(this.columnOffset, x), 0, this.nbCols - this.nbColsVisible);
+        let i = TableView.bound(y / this.rowHeight | 0, 0, this.nbRows - this.nbRowsVisible);
+        let j = TableView.bound(TableView.binarySearch(this.columnOffset, x), 0, this.nbCols - this.nbColsVisible);
 
         return [i, j];
 
@@ -1020,7 +918,7 @@ class TableView {
                 this.bodyViewport.appendChild(element);
                 this.cells[`${row},${column}`] = element;
 
-                element.onmouseover = function(e) {
+                element.onmouseover = function (e) {
                     var coordinates = /(\d*),(\d*)/.exec(element.getAttribute("id"));
 
                     for (var iColumn = __self.firstVisibleColumn; iColumn < __self.firstVisibleColumn + __self.nbColsVisible; iColumn++) {
@@ -1030,7 +928,7 @@ class TableView {
 
                 }
 
-                element.onmouseout = function(e) {
+                element.onmouseout = function (e) {
                     var coordinates = /(\d*),(\d*)/.exec(element.getAttribute("id"));
 
                     for (var iColumn = __self.firstVisibleColumn; iColumn < __self.firstVisibleColumn + __self.nbColsVisible; iColumn++) {
@@ -1038,7 +936,7 @@ class TableView {
                     }
                 }
 
-                element.onmousedown = function(e) {
+                element.onmousedown = function (e) {
                     var coordinates = /(\d*),(\d*)/.exec(element.getAttribute("id"));
 
                     for (let processor in __self.__processors) {
@@ -1086,9 +984,9 @@ class TableView {
 
             var eventRegister = new EventRegister();
 
-            eventRegister.bind(divider, 'mousedown', (function(params) {
+            eventRegister.bind(divider, 'mousedown', (function (params) {
 
-                return function(event) {
+                return function (event) {
                     params.owner.currentColumn = params.element;
                 };
 
@@ -1124,9 +1022,9 @@ class TableView {
         this.scroll = new ScrollBarProxy(this.bodyContainer, this.headerContainer, this.width, this.height,
             this.eventRegister, this.scrollBarVisible, this.enableDragMove);
 
-        onScroll = (function(__this) {
+        onScroll = (function (__this) {
 
-            return function(x, y) {
+            return function (x, y) {
                 var _, cell, col, ref6, ref7, cellRef;
 
                 ref6 = __this.leftTopCornerFromXY(x, y), row = ref6[0], column = ref6[1];
@@ -1159,9 +1057,9 @@ class TableView {
 
         })(this);
 
-        this.eventRegister.bind(document, 'mousemove', (function(__this) {
+        this.eventRegister.bind(document, 'mousemove', (function (__this) {
 
-            return function(event) {
+            return function (event) {
 
                 if (__this.currentColumn != null) {
                     var rect = __this.currentColumn.getBoundingClientRect();
@@ -1279,13 +1177,13 @@ class TableView {
 
         }
 
-        drawer = (function(__this) {
+        drawer = (function (__this) {
 
-            return function(header, column) {
+            return function (header, column) {
 
                 if (evenNotPending || header.pending) {
 
-                    return __this.model.getHeader(column, function(data) {
+                    return __this.model.getHeader(column, function (data) {
 
                         header.pending = false;
 
@@ -1307,7 +1205,7 @@ class TableView {
 
             drawer(header, column);
 
-            results.push((function() {
+            results.push((function () {
                 var tracker, ref2, ref3, rows;
 
                 rows = [];
@@ -1320,11 +1218,11 @@ class TableView {
 
                     if (evenNotPending || cell.pending) {
 
-                        rows.push((function(__this) {
+                        rows.push((function (__this) {
 
-                            return function(cell) {
+                            return function (cell) {
 
-                                return __this.model.getCell(row, column, function(data) {
+                                return __this.model.getCell(row, column, function (data) {
 
                                     cell.pending = false;
 
@@ -1354,7 +1252,7 @@ class TableView {
 
     };
 
-    onScroll(x, y) {};
+    onScroll(x, y) { };
 
     goTo(i, j) {
         var targetX, targetY;
@@ -1417,9 +1315,9 @@ class TableView {
 
             if (this.model.hasHeader(column)) {
 
-                this.model.getHeader(column, (function(__this) {
+                this.model.getHeader(column, (function (__this) {
 
-                    return function(data) {
+                    return function (data) {
 
                         header.pending = false;
 
@@ -1437,13 +1335,13 @@ class TableView {
 
             this.columns[column] = header;
 
-            fn = (function(__this) {
+            fn = (function (__this) {
 
-                return function(cell) {
+                return function (cell) {
 
                     if (__this.model.hasCell(i, column)) {
 
-                        return __this.model.getCell(i, column, function(data) {
+                        return __this.model.getCell(i, column, function (data) {
 
                             cell.pending = false;
 
@@ -1507,14 +1405,14 @@ class TableView {
 
             row_y = dest_i * this.rowHeight;
 
-            fn = (function(__this) {
+            fn = (function (__this) {
 
-                return function(cell) {
+                return function (cell) {
                     cell.setAttribute("id", `${dest_i},${j}`);
 
                     if (__this.model.hasCell(dest_i, j)) {
 
-                        return __this.model.getCell(dest_i, j, function(data) {
+                        return __this.model.getCell(dest_i, j, function (data) {
 
                             cell.pending = false;
 
@@ -1562,3 +1460,5 @@ class TableView {
     }
 
 }
+
+module.exports = TableView;
