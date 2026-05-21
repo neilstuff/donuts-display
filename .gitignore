@@ -3,3 +3,5 @@ dist
 assets/images/Thumbs.db
 package-lock.json
 debug.log
+main.bundle.js
+main.bundle.js.LICENSE.txt
