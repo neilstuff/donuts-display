@@ -12,9 +12,18 @@ module.exports = {
   },
   resolve: {
     modules: [
-      'node_modules', 
+      'node_modules',
       path.resolve(__dirname, 'node_modules')
     ],
-    extensions: ['.js', '.json', '.css']
+    extensions: ['.js', '.json']
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        // css-loader runs first, then style-loader
+        use: ["style-loader", "css-loader"],
+      },
+    ],
   }
 };
